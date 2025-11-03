@@ -1,0 +1,41 @@
+version: '3'
+services:
+  php:
+    build:
+      context: .
+      dockerfile: ./docker/php/Dockerfile
+    container_name: bssc_admin_php
+    restart: unless-stopped
+    ports:
+      - "9010:9000"
+    environment:
+      - PHP_MODE=production
+    volumes:
+      - ./:/var/www/bssc_backend_admin
+    networks:
+      - bssc_admin_network
+      - database_bssc_network
+    cap_add:
+      - SYS_ADMIN
+
+  nginx:
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
+    container_name: bssc_admin_nginx
+    restart: unless-stopped
+    ports:
+      - "8010:80"
+    volumes:
+      - ./:/var/www/bssc_backend_admin
+    depends_on:
+      - php
+    networks:
+      - bssc_admin_network
+      - database_bssc_network
+
+networks:
+  bssc_admin_network:
+    driver: bridge
+  database_bssc_network:
+    external: true
