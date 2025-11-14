@@ -1,9 +1,6 @@
 # Use the Ubuntu 24.04 as the base image
 FROM public.ecr.aws/docker/library/ubuntu:24.04
 
-# --- Build Arguments and Environment Setup ---
-# Set build argument for environment mode (defaults to development if not passed)
-ARG PHP_MODE=development
 
 # Set environment variables
 ENV LANG=C.UTF-8
@@ -11,12 +8,9 @@ ENV LC_ALL=C.UTF-8
 ENV TZ=Asia/Manila
 ENV COMPOSER_ALLOW_SUPERUSER=1
 ENV COMPOSER_HOME=/composer
-ENV PHP_MODE=$PHP_MODE
 
 # --- Composer Installation ---
-# Copy Composer binary from the official Composer Docker image and ensure it's executable
 COPY --from=public.ecr.aws/docker/library/composer:latest /usr/bin/composer /usr/bin/composer
-RUN chmod +x /usr/bin/composer
 
 # --- System and PHP Installation ---
 RUN apt update \
@@ -83,11 +77,9 @@ RUN if [ "$PHP_MODE" = "production" ]; then \
     else \
         composer install -q -n --no-ansi --no-scripts --no-progress --prefer-dist; \
     fi \
-    # Create necessary cache directories and set proper ownership for www-data
-    && mkdir -p /var/www/.cache /var/www/.local /var/www/.config \
-    && chown -R www-data:www-data /var/www/bssc_backend_admin /var/www/.cache /var/www/.local /var/www/.config \
-    # Set permissions for storage/cache directories
-    && chmod -R 755 storage bootstrap/cache /var/www/.cache /var/www/.local /var/www/.config
+ && mkdir -p /var/www/.cache /var/www/.local /var/www/.config \
+ && chown -R www-data:www-data /var/www/bssc_backend_admin /var/www/.cache /var/www/.local /var/www/.config \
+ && chmod -R 755 storage bootstrap/cache /var/www/.cache /var/www/.local /var/www/.config
 
 # --- Entrypoint ---
 EXPOSE 9000

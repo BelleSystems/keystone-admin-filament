@@ -14,7 +14,7 @@ services:
       - ./:/var/www/bssc_backend_admin
     networks:
       - bssc_admin_network
-      - database_bssc_network
+      - bssc-database_bssc_network
     cap_add:
       - SYS_ADMIN
 
@@ -32,10 +32,10 @@ services:
       - php
     networks:
       - bssc_admin_network
-      - database_bssc_network
+      - bssc-database_bssc_network
 
 networks:
   bssc_admin_network:
     driver: bridge
-  database_bssc_network:
+  bssc-database_bssc_network:
     external: true
