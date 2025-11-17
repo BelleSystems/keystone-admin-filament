@@ -21,9 +21,6 @@ rm -rf /var/www/storage-init
 # -----------------------------------------------------------
 #php artisan migrate --force
 
-# Generate the app key
-php artisan key:generate
-
 # Clear and cache configurations
 # -----------------------------------------------------------
 # Improves performance by caching config and routes.
