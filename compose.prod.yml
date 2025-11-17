@@ -1,6 +1,6 @@
 services:
   web:
-    container_name: bssc_admin_nginx
+    container_name: bssc_admin_nginx_prod
     build:
       context: .
       dockerfile: ./docker/production/nginx/Dockerfile
@@ -28,6 +28,7 @@ services:
         condition: service_healthy # Wait for php-fpm health check
 
   php-fpm:
+    container_name: bssc_admin_php_prod
     # For the php-fpm service, we will create a custom image to install the necessary PHP extensions and setup proper permissions.
     build:
       context: .
