@@ -35,8 +35,8 @@ setup: check setup-git-safe
 		sleep 2; \
 	done
 
-	@docker exec $(PHP_CONTAINER) chown -R www-data:www-data /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
-	@docker exec $(PHP_CONTAINER) chmod -R 775 /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
+	@docker exec $(PHP_CONTAINER) chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+	@docker exec $(PHP_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 	@docker exec $(PHP_CONTAINER) composer install --prefer-dist --no-interaction
 	@docker exec $(PHP_CONTAINER) php artisan key:generate
@@ -84,21 +84,6 @@ setup-prod: check
 	@echo "Waiting for containers to be ready..."
 	@sleep 10
 
-	# Wait for all MySQL containers to be ready
-	@echo "Waiting for MySQL containers to be ready..."
-	@until docker exec pms_mysql_prod mysqladmin ping -h localhost -u root -ppassword --silent; do \
-		echo "Waiting for main MySQL container to be ready..."; \
-		sleep 3; \
-	done
-	@until docker exec pms_mysql_training_prod mysqladmin ping -h localhost -u root -ppassword --silent; do \
-		echo "Waiting for training MySQL container to be ready..."; \
-		sleep 3; \
-	done
-	@until docker exec pms_mysql_testing_prod mysqladmin ping -h localhost -u root -ppassword --silent; do \
-		echo "Waiting for testing MySQL container to be ready..."; \
-		sleep 3; \
-	done
-
 	# Wait for PHP container to be ready
 	@echo "Waiting for PHP container to be ready..."
 	@until docker exec $(PHP_CONTAINER_PROD) php -v > /dev/null 2>&1; do \
@@ -108,8 +93,8 @@ setup-prod: check
 
 	# Set proper permissions
 	@echo "Setting proper permissions..."
-	@docker exec $(PHP_CONTAINER_PROD) chown -R www-data:www-data /var/www/pms/storage /var/www/pms/bootstrap/cache
-	@docker exec $(PHP_CONTAINER_PROD) chmod -R 775 /var/www/pms/storage /var/www/pms/bootstrap/cache
+	@docker exec $(PHP_CONTAINER_PROD) chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
+	@docker exec $(PHP_CONTAINER_PROD) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 	# Install dependencies
 	@echo "Installing PHP dependencies..."
@@ -122,10 +107,6 @@ setup-prod: check
 	# Clear configuration cache to pick up new DB_HOST
 	@docker exec $(PHP_CONTAINER_PROD) php artisan config:clear
 
-	# Run migrations on all databases
-	@echo "Running database migrations..."
-	@docker exec $(PHP_CONTAINER_PROD) php artisan migrate:all --force
-
 	# Optimize for production
 	@echo "Optimizing for production..."
 	@docker exec $(PHP_CONTAINER_PROD) php artisan optimize
@@ -134,8 +115,6 @@ setup-prod: check
 	@docker exec $(PHP_CONTAINER_PROD) php artisan view:cache
 
 	@echo "Production setup completed successfully!"
-	@echo "Application should be available at: http://localhost"
-	@echo "Health check: http://localhost/health"
 
 # Production update
 update-prod:
@@ -150,7 +129,7 @@ health-prod:
 	@curl -f http://localhost/health || echo "Health check failed"
 	@echo ""
 	@echo "Testing database connection..."
-	@docker exec $(PHP_CONTAINER_PROD) php /var/www/pms/docker/php/test-db.php
+	@docker exec $(PHP_CONTAINER_PROD) php /var/www/docker/php/test-db.php
 
 # View production logs
 logs-prod:
@@ -173,13 +152,13 @@ troubleshoot-prod:
 	@docker-compose -f docker-compose.prod.yml ps
 	@echo ""
 	@echo "2. Network Configuration:"
-	@docker network inspect property-management-system-backend_pms_network --format='{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
+	@docker network inspect bssc_admin_network_prod --format='{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
 	@echo ""
 	@echo "3. Laravel Logs (last 10 lines):"
-	@docker exec $(PHP_CONTAINER_PROD) tail -10 /var/www/pms/storage/logs/laravel.log || echo "No logs found"
+	@docker exec $(PHP_CONTAINER_PROD) tail -10 /var/www/storage/logs/laravel.log || echo "No logs found"
 	@echo ""
 	@echo "4. Database Connection Test:"
-	@docker exec $(PHP_CONTAINER_PROD) php /var/www/pms/docker/php/test-db.php
+	@docker exec $(PHP_CONTAINER_PROD) php /var/www/docker/php/test-db.php
 	@echo ""
 	@echo "5. Application Health:"
 	@curl -f http://localhost/health > /dev/null 2>&1 && echo "Application: OK" || echo "Application: FAILED"
@@ -194,7 +173,7 @@ bash-prod:
 
 # Production database access
 db-prod:
-	@docker exec -it pms_mysql_prod mysql -u root -ppassword pms
+	@docker exec -it bssc_admin_mysql_prod mysql -u root -ppassword bssc_admin
 
 # Production training database access
 db-training-prod:
