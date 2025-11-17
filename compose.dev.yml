@@ -1,5 +1,6 @@
 services:
   web:
+    container_name: bssc_admin_nginx
     image: nginx:latest # Using the default Nginx image with custom configuration.
     volumes:
       # Mount the application code for live updates
@@ -19,6 +20,7 @@ services:
         condition: service_started # Wait for php-fpm to start
 
   php-fpm:
+    container_name: bssc_admin_php
     # For the php-fpm service, we will use our common PHP-FPM Dockerfile with the development target
     build:
       context: .
@@ -45,6 +47,7 @@ services:
       - bssc-database_bssc_network
 
   workspace:
+    container_name: bssc_admin_workspace
     # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
     build:
       context: .
