@@ -79,7 +79,7 @@ update-setup:
 setup-prod: check
 	@cp env.production .env || true
 	@vi .env
-	@docker-compose -f docker-compose.prod.yml up -d --build
+	@docker-compose -f compose.prod.yml up -d --build
 
 	@echo "Waiting for containers to be ready..."
 	@sleep 10
@@ -118,12 +118,12 @@ setup-prod: check
 
 # Production update
 update-prod:
-	@docker-compose -f docker-compose.prod.yml up -d --build
+	@docker-compose -f compose.prod.yml up -d --build
 
 # Production health check
 health-prod:
 	@echo "Checking production containers status..."
-	@docker-compose -f docker-compose.prod.yml ps
+	@docker-compose -f compose.prod.yml ps
 	@echo ""
 	@echo "Testing application health..."
 	@curl -f http://localhost/health || echo "Health check failed"
@@ -133,23 +133,23 @@ health-prod:
 
 # View production logs
 logs-prod:
-	@docker-compose -f docker-compose.prod.yml logs -f
+	@docker-compose -f compose.prod.yml logs -f
 
 # View specific service logs
 logs-php-prod:
-	@docker-compose -f docker-compose.prod.yml logs -f php
+	@docker-compose -f compose.prod.yml logs -f php
 
 logs-nginx-prod:
-	@docker-compose -f docker-compose.prod.yml logs -f nginx
+	@docker-compose -f compose.prod.yml logs -f nginx
 
 logs-mysql-prod:
-	@docker-compose -f docker-compose.prod.yml logs -f mysql
+	@docker-compose -f compose.prod.yml logs -f mysql
 
 # Production troubleshooting
 troubleshoot-prod:
 	@echo "=== Production Troubleshooting ==="
 	@echo "1. Container Status:"
-	@docker-compose -f docker-compose.prod.yml ps
+	@docker-compose -f compose.prod.yml ps
 	@echo ""
 	@echo "2. Network Configuration:"
 	@docker network inspect bssc_admin_network_prod --format='{{range .Containers}}{{.Name}}: {{.IPv4Address}}{{"\n"}}{{end}}'
@@ -165,7 +165,7 @@ troubleshoot-prod:
 
 # Quick production restart
 restart-prod:
-	@docker-compose -f docker-compose.prod.yml restart
+	@docker-compose -f compose.prod.yml restart
 
 # Production bash access
 bash-prod:
@@ -189,7 +189,7 @@ remove-setup:
 
 # Stop and remove production containers
 remove-prod:
-	@docker-compose -f docker-compose.prod.yml down
+	@docker-compose -f compose.prod.yml down
 
 # Fresh migration with seed
 setup-tables:
