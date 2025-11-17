@@ -77,7 +77,7 @@ update-setup:
 
 # Production setup
 setup-prod: check
-	@cp env.production .env || true
+	@cp .env.example .env || true
 	@vi .env
 	@docker-compose -f compose.prod.yml up -d --build
 
