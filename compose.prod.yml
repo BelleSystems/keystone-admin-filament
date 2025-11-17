@@ -37,6 +37,7 @@ services:
     restart: unless-stopped
     volumes:
       - bssc_admin_volume_prod:/var/www/storage # Mount the storage volume
+      - ./.env:/var/www/.env # Mount the .env file so Laravel can read and write it
     env_file:
       - .env
     networks:
