@@ -24,8 +24,7 @@ setup-git-safe:
 setup: check setup-git-safe
 	@cp .env.example .env || true
 	@vi .env
-	@vi docker-compose.yml
-	@docker-compose up -d --build
+	@docker-compose -f compose.dev.yml up -d --build
 
 	@echo "Waiting for containers to be ready..."
 	@sleep 5
