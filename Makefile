@@ -2,6 +2,7 @@
 
 NGINX_CONTAINER = bssc_admin_nginx
 PHP_CONTAINER = bssc_admin_php
+PHP_WORKSPACE_CONTAINER = bssc_admin_workspace
 NGINX_CONTAINER_PROD = bssc_admin_nginx_prod
 PHP_CONTAINER_PROD = bssc_admin_php_prod
 REQUIREMENTS = docker docker-compose vi npm node git
@@ -39,21 +40,21 @@ setup: check setup-git-safe
 	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan key:generate
-	@docker exec $(PHP_CONTAINER) composer install --prefer-dist --no-interaction
-	@docker exec $(PHP_CONTAINER) php artisan key:generate
-	@docker exec $(PHP_CONTAINER) php artisan storage:link
+	@docker exec $(PHP_WORKSPACE_CONTAINER) composer install --prefer-dist --no-interaction
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan key:generate
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan storage:link
 #	@$(MAKE) setup-tables
 	@$(MAKE) clear-cache
 # Clear various Laravel caches and fix permissions
 clear-cache:
-	@docker exec -u root $(PHP_CONTAINER) chown -R www:www /var/www/storage /var/www/bootstrap/cache
-	@docker exec -u root $(PHP_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
-	@docker exec $(PHP_CONTAINER) php artisan optimize:clear
-	@docker exec $(PHP_CONTAINER) php artisan optimize
-	@docker exec $(PHP_CONTAINER) php artisan cache:clear
-	@docker exec $(PHP_CONTAINER) php artisan config:clear
-	@docker exec $(PHP_CONTAINER) php artisan route:clear
-	@docker exec $(PHP_CONTAINER) php artisan view:clear
+	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chown -R www:www /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan optimize:clear
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan optimize
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan cache:clear
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan config:clear
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan route:clear
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan view:clear
 
 # Run Laravel migrations
 migrate:
