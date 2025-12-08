@@ -47,7 +47,7 @@ setup: check setup-git-safe
 	@$(MAKE) clear-cache
 # Clear various Laravel caches and fix permissions
 clear-cache:
-	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chown -R www:www /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chown -R www:www-data /var/www/storage /var/www/bootstrap/cache
 	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan optimize:clear
 	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan optimize
