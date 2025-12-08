@@ -35,13 +35,10 @@ setup: check setup-git-safe
 		sleep 2; \
 	done
 
-	# Fix ownership of vendor directory (mounted from host may be root-owned)
-	@docker exec -u root $(PHP_CONTAINER) chown -R www:www /var/www/vendor 2>/dev/null || true
-	@docker exec -u root $(PHP_CONTAINER) chmod -R 775 /var/www/vendor 2>/dev/null || true
-	# Set proper permissions for Laravel storage and cache directories
-	@docker exec -u root $(PHP_CONTAINER) chown -R www:www /var/www/storage /var/www/bootstrap/cache
-	@docker exec -u root $(PHP_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chown -R www:www-data /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
+	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan key:generate
 	@docker exec $(PHP_CONTAINER) composer install --prefer-dist --no-interaction
 	@docker exec $(PHP_CONTAINER) php artisan key:generate
 	@docker exec $(PHP_CONTAINER) php artisan storage:link
