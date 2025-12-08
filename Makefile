@@ -35,19 +35,19 @@ setup: check setup-git-safe
 		sleep 2; \
 	done
 
-	@docker exec $(PHP_CONTAINER) chown -R www-data:www-data /var/www/storage /var/www/bootstrap/cache
-	@docker exec $(PHP_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_CONTAINER) chown -R www:www-data /var/www/storage /var/www/bootstrap/cache
+	@docker exec -u root $(PHP_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 	@docker exec $(PHP_CONTAINER) composer install --prefer-dist --no-interaction
 	@docker exec $(PHP_CONTAINER) php artisan key:generate
 	@docker exec $(PHP_CONTAINER) php artisan storage:link
 #	@$(MAKE) setup-tables
-#	@$(MAKE) clear-cache
+	@$(MAKE) clear-cache
 
 # Clear various Laravel caches and fix permissions
 clear-cache:
-	@docker exec $(PHP_CONTAINER) chown -R www-data:www-data /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
-	@docker exec $(PHP_CONTAINER) chmod -R 775 /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
+	@docker exec -u root $(PHP_CONTAINER) chown -R www:www-data /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
+	@docker exec -u root $(PHP_CONTAINER) chmod -R 775 /var/www/bssc_backend_admin/storage /var/www/bssc_backend_admin/bootstrap/cache
 	@docker exec $(PHP_CONTAINER) php artisan optimize:clear
 	@docker exec $(PHP_CONTAINER) php artisan optimize
 	@docker exec $(PHP_CONTAINER) php artisan cache:clear
