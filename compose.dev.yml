@@ -14,7 +14,7 @@ services:
       - NGINX_HOST=localhost
     networks:
       - bssc_admin_network
-      - bssc-database_bssc_network
+      - database_bssc_network
     depends_on:
       php-fpm:
         condition: service_started # Wait for php-fpm to start
@@ -29,7 +29,7 @@ services:
       args:
         UID: ${UID:-1000}
         GID: ${GID:-1000}
-        XDEBUG_ENABLED: ${XDEBUG_ENABLED:-true}
+        XDEBUG_ENABLED: ${XDEBUG_ENABLED:-false}
         XDEBUG_MODE: develop,coverage,debug,profile
         XDEBUG_HOST: ${XDEBUG_HOST:-host.docker.internal}
         XDEBUG_IDE_KEY: ${XDEBUG_IDE_KEY:-DOCKER}
@@ -44,7 +44,7 @@ services:
       - ./:/var/www
     networks:
       - bssc_admin_network
-      - bssc-database_bssc_network
+      - database_bssc_network
 
   workspace:
     container_name: bssc_admin_workspace
@@ -69,9 +69,9 @@ services:
       - ./:/var/www
     networks:
       - bssc_admin_network
-      - bssc-database_bssc_network
+      - database_bssc_network
 
 networks:
   bssc_admin_network:
-  bssc-database_bssc_network:
+  database_bssc_network:
     external: true
