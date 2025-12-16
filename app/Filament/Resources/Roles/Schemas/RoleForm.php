@@ -18,9 +18,9 @@ class RoleForm
                     ->required(),
                 Select::make('permissions')
                     ->label('Permissions')
+                    ->options(Permission::all()->pluck('name', 'id'))->preload()
                     ->relationship('permissions', 'name')->preload()
                     ->multiple()
-                    ->options(Permission::all()->pluck('name', 'id'))->preload()
             ]);
     }
 }

@@ -44,10 +44,10 @@ class UserForm
                             ->relationship('department', 'name')->preload(),
                         Select::make('roles')
                             ->label('Roles')
-                            ->prefixIcon('heroicon-o-tag')
-                            ->multiple()
+                                ->prefixIcon('heroicon-o-tag')
                             ->options(Role::all()->pluck('name', 'id'))
-                            ->relationship('roles', 'name')->preload()->grow(),
+                                ->relationship('roles', 'name')->preload()
+                                ->multiple(),
                         ]),
                         Section::make('Retire')
                         ->description('Check if the user is retired. This will remove the user from logging in.')
