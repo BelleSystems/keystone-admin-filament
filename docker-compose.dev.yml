@@ -1,7 +1,9 @@
 services:
   web:
     container_name: bssc_admin_nginx
-    image: nginx:latest # Using the default Nginx image with custom configuration.
+    build:
+      context: .
+      dockerfile: ./docker/nginx/Dockerfile
     volumes:
       # Mount the application code for live updates
       - ./:/var/www
