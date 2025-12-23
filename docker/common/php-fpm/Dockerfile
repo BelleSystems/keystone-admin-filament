@@ -28,6 +28,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && apt-get autoremove -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 
+# Install Composer from the official Composer image
+# This is more reliable than downloading via curl and avoids network issues
+COPY --from=composer:latest /usr/bin/composer /usr/local/bin/composer
+
 # Set the working directory inside the container
 WORKDIR /var/www
 
@@ -48,9 +52,8 @@ WORKDIR /var/www
 # -----------------------------------------------------------
 COPY . /var/www
 
-# Install Composer and dependencies
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-    && composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
+# Install dependencies
+RUN composer install --no-dev --optimize-autoloader --no-interaction --no-progress --prefer-dist
 
 
 # Stage 2: Production environment
