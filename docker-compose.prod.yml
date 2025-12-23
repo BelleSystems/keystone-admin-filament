@@ -59,7 +59,7 @@ networks:
   keystone-admin-production:
   database_network:
     external: true
-    name: database_bssc_network
+    name: ${DATABASE_NETWORK:-bssc-database_bssc_network}
 
 volumes:
   keystone-admin-storage:

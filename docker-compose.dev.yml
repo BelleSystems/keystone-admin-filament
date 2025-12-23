@@ -1,6 +1,6 @@
 services:
   web:
-    container_name: bssc_admin_nginx
+    container_name: keystone_admin_nginx
     build:
       context: .
       dockerfile: ./docker/nginx/Dockerfile
@@ -15,14 +15,14 @@ services:
     environment:
       - NGINX_HOST=localhost
     networks:
-      - bssc_admin_network
-      - database_bssc_network
+      - keystone_admin_network
+      - database_keystone_network
     depends_on:
       php-fpm:
         condition: service_started # Wait for php-fpm to start
 
   php-fpm:
-    container_name: bssc_admin_php
+    container_name: keystone_admin_php
     # For the php-fpm service, we will use our common PHP-FPM Dockerfile with the development target
     build:
       context: .
@@ -45,11 +45,11 @@ services:
       # Mount the application code for live updates
       - ./:/var/www
     networks:
-      - bssc_admin_network
-      - database_bssc_network
+      - keystone_admin_network
+      - database_keystone_network
 
   workspace:
-    container_name: bssc_admin_workspace
+    container_name: keystone_admin_workspace
     # For the workspace service, we will also create a custom image to install and setup all the necessary stuff.
     build:
       context: .
@@ -70,10 +70,11 @@ services:
     volumes:
       - ./:/var/www
     networks:
-      - bssc_admin_network
-      - database_bssc_network
+      - keystone_admin_network
+      - database_keystone_network
 
 networks:
-  bssc_admin_network:
-  database_bssc_network:
+  keystone_admin_network:
+  database_keystone_network:
+    name: ${DATABASE_NETWORK:-keystone-database_keystone_network}
     external: true

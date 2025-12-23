@@ -40,9 +40,6 @@ setup: check setup-git-safe
 	@docker exec -u root $(PHP_WORKSPACE_CONTAINER) chmod -R 775 /var/www/storage /var/www/bootstrap/cache
 
 	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan key:generate
-	@docker exec $(PHP_WORKSPACE_CONTAINER) composer install --prefer-dist --no-interaction
-	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan key:generate
-	@docker exec $(PHP_WORKSPACE_CONTAINER) php artisan storage:link
 #	@$(MAKE) setup-tables
 	@$(MAKE) clear-cache
 # Clear various Laravel caches and fix permissions
